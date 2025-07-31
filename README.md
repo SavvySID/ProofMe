@@ -360,7 +360,7 @@ ProofMe leverages **zero-knowledge proofs (ZKPs)** and **Citrea's zkEVM** to all
 
 ## ► Tech Stack
 
-- **Frontend**: React, JavaScript, TailwindCSS
+- **Frontend**: React, TypeScript, TailwindCSS
 - **Wallets**: RainbowKit(soon), Wagmi, Ethers.js
 - **ZK Tooling**: Circom, SnarkJS
 - **Contracts**: Solidity (Verifier + ProofHandler)
