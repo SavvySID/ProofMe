@@ -1,0 +1,90 @@
+{
+  "name": "proofme",
+  "version": "1.0.0",
+  "description": "Zero-Knowledge Credential Verification on Bitcoin using Citrea zkEVM",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "compile:simple": "node scripts/compile-simple.js",
+    "compile:direct": "node scripts/compile-direct.js",
+    "verify": "node scripts/verify-contracts.js",
+    "deploy:citrea": "hardhat run scripts/deploy.js --network citrea",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "proof:generate": "node zk/generate-proof.js",
+    "proof:verify": "node zk/verify-proof.js",
+    "circuit:compile": "node scripts/compile-zk.js",
+    "circuit:setup": "node scripts/compile-zk.js",
+    "circuit:export": "node scripts/compile-zk.js",
+    "circuit:compile:local": "node scripts/compile-zk-local.js",
+    "circuit:check": "node scripts/compile-zk-simple.js",
+    "deploy:check": "node scripts/deploy-simple.js",
+    "deploy:direct": "node scripts/deploy-direct.js",
+    "setup:key": "node scripts/setup-private-key.js",
+    "deploy:test": "node scripts/deploy-test.js",
+    "deploy:simple": "node scripts/deploy-simple.js",
+    "deploy:local": "node scripts/deploy-local.js",
+    "update:env": "node scripts/update-env.js",
+    "status": "node scripts/status-check.js",
+    "start:frontend": "node scripts/start-frontend.js",
+    "start:frontend:cmd": "node scripts/start-frontend-cmd.js",
+    "fix:frontend": "node scripts/fix-frontend.js",
+    "start:direct": "node scripts/start-frontend-direct.js",
+    "debug:frontend": "node scripts/debug-frontend.js",
+    "test:wallet": "node scripts/test-wallet.js",
+    "check:metamask": "node scripts/check-metamask.js",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "format": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "zero-knowledge",
+    "bitcoin",
+    "citrea",
+    "zkEVM",
+    "privacy",
+    "credentials",
+    "verification"
+  ],
+  "author": "ProofMe Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "hardhat": "^2.19.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^1.3.0",
+    "@wagmi/core": "^1.4.0",
+    "circomlibjs": "^0.1.7",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "snarkjs": "^0.7.0",
+    "tailwindcss": "^3.3.0",
+    "viem": "^1.19.0",
+    "wagmi": "^1.4.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
