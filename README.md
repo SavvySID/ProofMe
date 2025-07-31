@@ -12,6 +12,57 @@ ProofMe enables users to prove identity attributes like age, citizenship, or deg
 
 ---
 
+## ► Problem
+
+Every time you share your ID online, whether to verify your age or prove your qualifications, you risk **exposing sensitive personal data**. Traditional Web2 verification systems are centralized, leak-prone, and non-compliant with data privacy laws like GDPR and India's DPDPA.
+
+**Users should be able to prove facts without revealing data.**  
+That's what ProofMe solves!!
+
+---
+
+## ► Solution: ProofMe 
+
+ProofMe solves this issue by enabling privacy-preserving credential validation using zero-knowledge proofs (ZKPs). Instead of revealing the actual information, users can confirm they possess valid credentials without disclosing the information itself. For example, a user can confirm they are over 18 years old without revealing their complete birth date and ID.
+
+ProofMe leverages **zero-knowledge proofs (ZKPs)** and **Citrea's zkEVM** to allow users to:
+- Prove facts like "I am over 18" or "I have a valid driver's license"
+- Without revealing the underlying documents or data
+- And with verification recorded on-chain (on Bitcoin via Citrea)
+- Making the proof reusable across multiple platforms
+- Ensuring verifiability without reliance on centralized servers
+- Enabling DAOs, DeFi, and regulated dApps to adopt privacy-preserving compliance mechanisms
+
+---
+
+## ► How It Works
+
+1. **Off-chain Verification**  
+   A user verifies credentials with a trusted issuer (e.g. university, KYC provider).
+
+2. **ZK Proof Generation**  
+   A zero-knowledge proof is generated (e.g., using `circom` or `snarkjs`) asserting a specific attribute.
+
+3. **On-chain Submission**  
+   The proof is submitted to a smart contract on Citrea zkEVM.
+
+4. **Trustless Verification**  
+   Verifiers (dapps, DAOs, platforms) check on-chain proof status without accessing any raw data.
+
+---
+
+## ► Features
+
+| Feature                    | Description |
+|---------------------------|-------------|
+| ZK Age Check            | Uses Circom circuit to prove `age > 18` |
+| Verifiable Smart Contract | On-chain verifier emits success/failure |
+| RainbowKit Wallet Connect | Plug and play Web3 wallet onboarding |
+| Citrea zkEVM Compatible | Built for Bitcoin L2 scalability & privacy |
+| Audit Trail for Verifiers | DAOs/apps can verify users without storing PII |
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
@@ -304,57 +355,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Circom](https://circom.io/) for ZK circuit framework
 - [SnarkJS](https://github.com/iden3/snarkjs) for proof generation
 - [Hardhat](https://hardhat.org/) for development framework
-
----
-
-## ► Problem
-
-Every time you share your ID online, whether to verify your age or prove your qualifications, you risk **exposing sensitive personal data**. Traditional Web2 verification systems are centralized, leak-prone, and non-compliant with data privacy laws like GDPR and India's DPDPA.
-
-**Users should be able to prove facts without revealing data.**  
-That's what ProofMe solves!!
-
----
-
-## ► Solution: ProofMe 
-
-ProofMe solves this issue by enabling privacy-preserving credential validation using zero-knowledge proofs (ZKPs). Instead of revealing the actual information, users can confirm they possess valid credentials without disclosing the information itself. For example, a user can confirm they are over 18 years old without revealing their complete birth date and ID.
-
-ProofMe leverages **zero-knowledge proofs (ZKPs)** and **Citrea's zkEVM** to allow users to:
-- Prove facts like "I am over 18" or "I have a valid driver's license"
-- Without revealing the underlying documents or data
-- And with verification recorded on-chain (on Bitcoin via Citrea)
-- Making the proof reusable across multiple platforms
-- Ensuring verifiability without reliance on centralized servers
-- Enabling DAOs, DeFi, and regulated dApps to adopt privacy-preserving compliance mechanisms
-
----
-
-## ► How It Works
-
-1. **Off-chain Verification**  
-   A user verifies credentials with a trusted issuer (e.g. university, KYC provider).
-
-2. **ZK Proof Generation**  
-   A zero-knowledge proof is generated (e.g., using `circom` or `snarkjs`) asserting a specific attribute.
-
-3. **On-chain Submission**  
-   The proof is submitted to a smart contract on Citrea zkEVM.
-
-4. **Trustless Verification**  
-   Verifiers (dapps, DAOs, platforms) check on-chain proof status without accessing any raw data.
-
----
-
-## ► Features
-
-| Feature                    | Description |
-|---------------------------|-------------|
-| ZK Age Check            | Uses Circom circuit to prove `age > 18` |
-| Verifiable Smart Contract | On-chain verifier emits success/failure |
-| RainbowKit Wallet Connect | Plug and play Web3 wallet onboarding |
-| Citrea zkEVM Compatible | Built for Bitcoin L2 scalability & privacy |
-| Audit Trail for Verifiers | DAOs/apps can verify users without storing PII |
 
 ---
 
