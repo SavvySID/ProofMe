@@ -112,3 +112,5 @@ jspm_packages/
 
 # Deployment info
 deployment.json 
+DEPLOYMENT_GUIDE.md
+UNDEPLOYMENT_GUIDE.md
