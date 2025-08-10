@@ -24,7 +24,7 @@ module.exports = {
       url: process.env.CITREA_RPC_URL || "https://rpc.testnet.citrea.xyz",
       chainId: 5115,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      gasPrice: 20000000000, // 20 gwei
+      // Let Hardhat estimate gas price automatically for cost optimization
     },
   },
   etherscan: {
