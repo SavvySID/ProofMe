@@ -1,0 +1,479 @@
+// Contract addresses and ABIs for ProofMe
+export const CONTRACTS = {
+  // Local development addresses
+  localhost: {
+    AgeVerifier: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    ProofRegistry: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  },
+  // Citrea testnet addresses (deployed successfully)
+  citrea: {
+    AgeVerifier: "0x0000000000000000000000000000000000000000",
+    ProofRegistry: "0x0000000000000000000000000000000000000000"
+  }
+}
+
+// AgeVerifier ABI (Simplified verifier for testing)
+export const AGE_VERIFIER_ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "input",
+        "type": "uint256[]"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "A",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256[2]",
+                "name": "X",
+                "type": "uint256[2]"
+              },
+              {
+                "internalType": "uint256[2]",
+                "name": "Y",
+                "type": "uint256[2]"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G2Point",
+            "name": "B",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "C",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct AgeVerifier.Proof",
+        "name": "proof",
+        "type": "tuple"
+      }
+    ],
+    "name": "verify",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "input",
+        "type": "uint256[]"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "A",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256[2]",
+                "name": "X",
+                "type": "uint256[2]"
+              },
+              {
+                "internalType": "uint256[2]",
+                "name": "Y",
+                "type": "uint256[2]"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G2Point",
+            "name": "B",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "C",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct AgeVerifier.Proof",
+        "name": "proof",
+        "type": "tuple"
+      }
+    ],
+    "name": "verifySimple",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "input",
+        "type": "uint256[]"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "A",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256[2]",
+                "name": "X",
+                "type": "uint256[2]"
+              },
+              {
+                "internalType": "uint256[2]",
+                "name": "Y",
+                "type": "uint256[2]"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G2Point",
+            "name": "B",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "C",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct AgeVerifier.Proof",
+        "name": "proof",
+        "type": "tuple"
+      }
+    ],
+    "name": "verifyTest",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]
+
+// ProofRegistry ABI
+export const PROOF_REGISTRY_ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_verifier",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "ProofAlreadyVerified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "ProofVerificationFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProofVerified",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getVerificationStatus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getVerificationTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "isVerified",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "A",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256[2]",
+                "name": "X",
+                "type": "uint256[2]"
+              },
+              {
+                "internalType": "uint256[2]",
+                "name": "Y",
+                "type": "uint256[2]"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G2Point",
+            "name": "B",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "X",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "Y",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AgeVerifier.G1Point",
+            "name": "C",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct AgeVerifier.Proof",
+        "name": "proof",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "publicSignals",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "verifyAndStoreProof",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "verifier",
+    "outputs": [
+      {
+        "internalType": "contract AgeVerifier",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+
+// Get contract addresses based on network
+export function getContractAddresses(chainId: number) {
+  switch (chainId) {
+    case 1337: // Localhost
+      return CONTRACTS.localhost
+    case 5115: // Citrea testnet
+      return CONTRACTS.citrea
+    default:
+      return CONTRACTS.localhost
+  }
+}
+
+// Check if contracts are deployed on the current network
+export function areContractsDeployed(chainId: number): boolean {
+  const addresses = getContractAddresses(chainId)
+  return addresses.AgeVerifier !== "0x0000000000000000000000000000000000000000" &&
+         addresses.ProofRegistry !== "0x0000000000000000000000000000000000000000"
+} 
