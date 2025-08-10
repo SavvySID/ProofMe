@@ -5,10 +5,10 @@ export const CONTRACTS = {
     AgeVerifier: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     ProofRegistry: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
   },
-  // Citrea testnet addresses (deployed successfully)
+  // Citrea testnet addresses (need to be deployed)
   citrea: {
-    AgeVerifier: "0x0000000000000000000000000000000000000000",
-    ProofRegistry: "0x0000000000000000000000000000000000000000"
+    AgeVerifier: "0x0000000000000000000000000000000000000000", // TODO: Deploy contract
+    ProofRegistry: "0x0000000000000000000000000000000000000000" // TODO: Deploy contract
   }
 }
 
