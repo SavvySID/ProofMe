@@ -1,3 +1,5 @@
+/// <reference types="react" />
+
 declare global {
   interface Window {
     ethereum?: {
@@ -9,4 +11,5 @@ declare global {
   }
 }
 
+// This export is required to make this a module
 export {} 
