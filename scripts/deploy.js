@@ -43,7 +43,7 @@ async function main() {
         // Save deployment addresses to file
         const deploymentInfo = {
             network: network.name || "citrea",
-            chainId: network.chainId,
+            chainId: Number(network.chainId), // Convert BigInt to Number for JSON serialization
             contracts: {
                 AgeVerifier: ageVerifierAddress,
                 ProofRegistry: proofRegistryAddress
