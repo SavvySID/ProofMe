@@ -1,6 +1,7 @@
 // Custom hook for wallet and contract interactions
 import { useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
+import { useAccount, useNetwork } from 'wagmi'
 import { 
   getContractInstancesWithSigner,
   checkVerificationStatus,
@@ -9,6 +10,8 @@ import {
   VerificationStatus
 } from '../utils/contracts'
 import { generateZKProof, ZKProof } from '../utils/zkProof'
+import { transactionTracker } from '../utils/transactionTracker'
+import { TransactionStatus } from '../types/global'
 
 export interface WalletState {
   isConnected: boolean
@@ -23,20 +26,11 @@ export interface ContractState {
   proofRegistry: ethers.Contract | null
 }
 
-// Citrea testnet configuration
-const CITREA_TESTNET = {
-  chainId: '0x13fb', // 5115 in hex
-  chainName: 'Citrea Testnet',
-  nativeCurrency: {
-    name: 'cBTC',
-    symbol: 'cBTC',
-    decimals: 18,
-  },
-  rpcUrls: ['https://rpc.testnet.citrea.xyz'],
-  blockExplorerUrls: ['https://explorer.testnet.citrea.xyz'],
-}
-
 export function useWallet() {
+  // Use wagmi hooks for wallet state
+  const { address, isConnected } = useAccount()
+  const { chain } = useNetwork()
+  
   const [walletState, setWalletState] = useState<WalletState>({
     isConnected: false,
     address: null,
@@ -56,180 +50,50 @@ export function useWallet() {
   })
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentTransaction, setCurrentTransaction] = useState<TransactionStatus | null>(null)
 
-  // Switch to Citrea testnet
-  const switchToCitreaTestnet = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
-      throw new Error('MetaMask is not installed')
-    }
-
-    setIsSwitchingNetwork(true)
-    setError(null)
-
-    try {
-      console.log('Requesting network switch to Citrea testnet...')
-      
-      // First, try to switch to the existing chain
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchChain',
-          params: [{ chainId: CITREA_TESTNET.chainId }],
-        })
-        console.log('User switched to Citrea testnet')
-      } catch (switchError: any) {
-        console.log('Switch failed, error code:', switchError.code)
-        
-        // This error code indicates that the chain has not been added to MetaMask
-        if (switchError.code === 4902) {
-          console.log('Chain not found, showing add network popup...')
-          // Just show the add network popup, let user handle it
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [CITREA_TESTNET],
-          })
-          console.log('Add network popup shown to user')
-        } else if (switchError.code === 4001) {
-          console.log('User rejected the network switch')
-          // User rejected, that's fine - just log it
-        } else {
-          console.log('Other switch error:', switchError.message)
-          // For any other error, just show the add network popup
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [CITREA_TESTNET],
-          })
-        }
-      }
-    } catch (error: any) {
-      console.log('Network operation completed or cancelled by user')
-      // Don't throw errors for user cancellations or completed operations
-      if (error.code === 4001) {
-        console.log('User cancelled the operation')
-      }
-    } finally {
-      setIsSwitchingNetwork(false)
-    }
-  }, [])
-
-  // Initialize wallet connection
-  const connectWallet = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
-      setError('MetaMask is not installed. Please install MetaMask and try again.')
-      return
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      // Request account access
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
-      })
-
-      if (accounts.length === 0) {
-        throw new Error('No accounts found. Please unlock MetaMask and try again.')
-      }
-
-      // Create provider and signer
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      const signer = await provider.getSigner()
-      const address = await signer.getAddress()
-      const network = await provider.getNetwork()
-      const chainId = Number(network.chainId)
-
-      console.log('Connected to network with chainId:', chainId)
-
-      // Check if we're on the correct network and contracts are deployed
-      if (chainId !== 5115 && chainId !== 1337) {
-        console.log('Connected to unsupported network (Chain ID:', chainId, ')')
-        // Just show a warning, don't automatically switch
-        setError(`Connected to unsupported network (Chain ID: ${chainId}). Please switch to Citrea Testnet (Chain ID: 5115) or Localhost (Chain ID: 1337) in MetaMask.`)
-      } else if (chainId === 5115) {
-        // Check if contracts are deployed on Citrea testnet
-        const { areContractsDeployed } = await import('../config/contracts')
-        if (!areContractsDeployed(chainId)) {
-          console.log('Contracts not deployed on Citrea testnet')
-          setError(`Contracts are not yet deployed to Citrea Testnet. Please switch to Localhost (Chain ID: 1337) for testing, or contact support if you need Citrea testnet deployment.`)
-        }
-      }
-
-      // Get contract instances (this might fail if contracts aren't deployed on current network)
-      let contracts
-      try {
-        contracts = getContractInstancesWithSigner(signer, chainId)
-      } catch (contractError) {
-        console.error('Failed to get contract instances:', contractError)
-        // Continue without contracts for now
-        contracts = { ageVerifier: null, proofRegistry: null }
-      }
-
-      setWalletState({
-        isConnected: true,
-        address,
-        chainId,
-        provider,
-        signer
-      })
-
-      setContractState(contracts)
-
-      // Check verification status (only if contracts are available)
-      if (contracts.proofRegistry) {
+  // Update wallet state when wagmi state changes
+  useEffect(() => {
+    const updateWalletState = async () => {
+      if (isConnected && address && chain && typeof window.ethereum !== 'undefined') {
         try {
-          const status = await checkVerificationStatus(provider, chainId, address)
-          setVerificationStatus(status)
-        } catch (statusError) {
-          console.error('Error checking verification status:', statusError)
-          // Don't fail the connection if status check fails
-        }
-      }
+          // Create provider and signer from the connected wallet
+          const provider = new ethers.BrowserProvider(window.ethereum)
+          const signer = await provider.getSigner()
+          
+          setWalletState({
+            isConnected: true,
+            address,
+            chainId: chain.id,
+            provider,
+            signer
+          })
 
-    } catch (err) {
-      console.error('Error connecting wallet:', err)
-      let errorMessage = 'Failed to connect wallet'
-      
-      if (err instanceof Error) {
-        if (err.message.includes('User rejected')) {
-          errorMessage = 'Connection was rejected. Please try again and approve the connection in MetaMask.'
-        } else if (err.message.includes('No accounts found')) {
-          errorMessage = 'No accounts found. Please unlock MetaMask and try again.'
-        } else if (err.message.includes('MetaMask is not installed')) {
-          errorMessage = 'MetaMask is not installed. Please install MetaMask and try again.'
-        } else {
-          errorMessage = err.message
+          // Get contract instances
+          try {
+            const contracts = getContractInstancesWithSigner(signer, chain.id)
+            setContractState(contracts)
+            
+            // Check verification status
+            if (contracts.proofRegistry) {
+              try {
+                const status = await checkVerificationStatus(provider, chain.id, address)
+                setVerificationStatus(status)
+              } catch (statusError) {
+                console.error('Error checking verification status:', statusError)
+              }
+            }
+          } catch (contractError) {
+            console.error('Failed to get contract instances:', contractError)
+            setContractState({ ageVerifier: null, proofRegistry: null })
+          }
+        } catch (err) {
+          console.error('Error setting up wallet state:', err)
+          setError('Failed to connect to wallet')
         }
-      }
-      
-      setError(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [switchToCitreaTestnet])
-
-  // Disconnect wallet - opens MetaMask for manual disconnect
-  const disconnectWallet = useCallback(async () => {
-    console.log('Opening MetaMask for disconnect...')
-    
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        // Open MetaMask by requesting current accounts - this opens the extension
-        await window.ethereum.request({ 
-          method: 'eth_accounts' 
-        })
-        
-        // Show user a message about how to disconnect
-        setTimeout(() => {
-          alert('To disconnect:\n1. Click on the MetaMask extension icon\n2. Click on the three dots menu\n3. Go to "Connected sites"\n4. Find this site and click "Disconnect"')
-        }, 500)
-        
-        console.log('MetaMask opened. User can manually disconnect.')
-      } catch (error) {
-        console.error('Error opening MetaMask:', error)
-        
-        // Fallback: just clear app state
+      } else {
+        // Reset wallet state when disconnected
         setWalletState({
           isConnected: false,
           address: null,
@@ -245,16 +109,32 @@ export function useWallet() {
           verified: false,
           timestamp: 0
         })
+        setCurrentTransaction(null)
         setError(null)
-        setIsLoading(false)
-        setIsSwitchingNetwork(false)
-        
-        console.log('App disconnected (MetaMask connection may persist)')
       }
-    } else {
-      alert('MetaMask not detected')
     }
-  }, [])
+
+    updateWalletState()
+  }, [isConnected, address, chain])
+
+  // Poll for transaction status updates
+  useEffect(() => {
+    if (!currentTransaction) return
+
+    const interval = setInterval(() => {
+      const updatedStatus = transactionTracker.getTransactionStatus(currentTransaction.hash)
+      if (updatedStatus && updatedStatus.status !== currentTransaction.status) {
+        setCurrentTransaction(updatedStatus)
+        
+        // If transaction is confirmed, check verification status
+        if (updatedStatus.status === 'confirmed') {
+          checkStatus()
+        }
+      }
+    }, 2000) // Check every 2 seconds
+
+    return () => clearInterval(interval)
+  }, [currentTransaction])
 
   // Generate and submit proof
   const generateAndSubmitProof = useCallback(async (birthYear: number): Promise<ZKProof | null> => {
@@ -263,19 +143,53 @@ export function useWallet() {
       return null
     }
 
+    // Check if contracts are deployed on current network using deploymentChecker
+    const { deploymentChecker } = await import('../utils/deploymentChecker')
+    try {
+      console.log('🔍 Checking contract deployment for chain:', walletState.chainId)
+      const deploymentStatus = await deploymentChecker.checkDeployment(walletState.chainId)
+      console.log('🔍 Deployment status:', deploymentStatus)
+      
+      if (!deploymentStatus.overall) {
+        console.error('❌ Contracts not deployed on current network')
+        setError(`Contracts not deployed on current network (Chain ID: ${walletState.chainId}). Please switch to a network with deployed contracts.`)
+        return null
+      }
+      console.log('✅ Contracts are deployed, proceeding with proof submission')
+    } catch (error) {
+      console.error('❌ Error checking contract deployment:', error)
+      setError(`Failed to verify contract deployment. Please check your network connection.`)
+      return null
+    }
+
     setIsLoading(true)
     setError(null)
 
     try {
-      // Generate ZK proof
+      // Generate ZK proof locally first
       const currentYear = new Date().getFullYear()
       const zkProof = await generateZKProof({ birthYear, currentYear })
 
+      // Check if we have contract instances
+      if (!contractState.proofRegistry) {
+        throw new Error('ProofRegistry contract not available. Please ensure you are connected to the correct network.')
+      }
+
       // Submit proof to blockchain
+      console.log('🚀 About to submit proof to blockchain...')
       const tx = await submitProofToBlockchain(walletState.signer, walletState.chainId, zkProof)
+      console.log('✅ Proof submitted successfully, transaction hash:', tx.hash)
+      
+      // Start tracking the transaction
+      console.log('📊 Starting transaction tracking...')
+      transactionTracker.addTransaction(tx.hash, walletState.chainId)
+      const initialStatus = transactionTracker.getTransactionStatus(tx.hash)
+      setCurrentTransaction(initialStatus || null)
       
       // Wait for transaction confirmation
+      console.log('⏳ Waiting for transaction confirmation...')
       const receipt = await waitForTransaction(walletState.provider!, tx.hash)
+      console.log('✅ Transaction confirmed, receipt:', receipt)
       
       // Check for verification events
       const events = receipt.logs
@@ -324,89 +238,21 @@ export function useWallet() {
     }
   }, [walletState])
 
-  // Listen for account changes
-  useEffect(() => {
-    if (typeof window.ethereum === 'undefined') {
-      return
-    }
-
-    const handleAccountsChanged = (accounts: string[]) => {
-      if (accounts.length === 0) {
-        // Clear app state when MetaMask disconnects
-        console.log('MetaMask disconnected, clearing app state...')
-        setWalletState({
-          isConnected: false,
-          address: null,
-          chainId: null,
-          provider: null,
-          signer: null
-        })
-        setContractState({
-          ageVerifier: null,
-          proofRegistry: null
-        })
-        setVerificationStatus({
-          verified: false,
-          timestamp: 0
-        })
-        setError(null)
-        setIsLoading(false)
-        setIsSwitchingNetwork(false)
-      } else {
-        // Reconnect with new account
-        connectWallet()
-      }
-    }
-
-    const handleChainChanged = () => {
-      // Reload page on chain change
-      window.location.reload()
-    }
-
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', handleAccountsChanged)
-      window.ethereum.on('chainChanged', handleChainChanged)
-
-      return () => {
-        if (window.ethereum) {
-          window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
-          window.ethereum.removeListener('chainChanged', handleChainChanged)
-        }
-      }
-    }
-  }, [connectWallet, disconnectWallet])
-
-  // Check if already connected on mount (but don't auto-connect)
-  useEffect(() => {
-    const checkExistingConnection = async () => {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-          if (accounts.length > 0) {
-            // User is already connected, initialize the connection
-            console.log('Existing connection detected, initializing...')
-            await connectWallet()
-          }
-        } catch (error) {
-          console.log('No existing connection found')
-        }
-      }
-    }
-    
-    checkExistingConnection()
-  }, [connectWallet])
+  // Get transaction explorer URL
+  const getTransactionExplorerUrl = useCallback((hash: string) => {
+    if (!walletState.chainId) return ''
+    return transactionTracker.getExplorerUrl(hash, walletState.chainId)
+  }, [walletState.chainId])
 
   return {
     walletState,
     contractState,
     verificationStatus,
     isLoading,
-    isSwitchingNetwork,
     error,
-    connectWallet,
-    disconnectWallet,
+    currentTransaction,
     generateAndSubmitProof,
     checkStatus,
-    switchToCitreaTestnet
+    getTransactionExplorerUrl
   }
 } 
