@@ -1,0 +1,12 @@
+{
+  "network": "Citrea Testnet",
+  "chainId": 5115,
+  "contracts": {
+    "AgeVerifier": "0xEFb338d4Df6F4a92c2542bfC09f9D468abf2D988",
+    "ProofRegistry": "0xe4621f418FF989ed399DEA7B064e8d707911D933"
+  },
+  "deployer": "0xF4269d1dC42fb600fbbe2E7dc143A8d887633bEE",
+  "timestamp": "2025-08-24T03:11:47.735Z",
+  "rpcUrl": "https://rpc.testnet.citrea.xyz",
+  "explorer": "https://explorer.testnet.citrea.xyz"
+}
