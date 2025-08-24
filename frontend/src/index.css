@@ -1,43 +1,296 @@
+/* Tailwind CSS Configuration */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
   }
-  
-  body {
-    @apply bg-gray-50 text-gray-900;
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground;
+    background: transparent !important;
+  }
+  html {
+    background: transparent !important;
+  }
+}
+
+/* Custom Component Classes */
 @layer components {
   .btn-primary {
-    @apply bg-citrea-600 hover:bg-citrea-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg border-0;
   }
-  
+
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-md;
   }
-  
+
   .card {
-    @apply bg-white rounded-xl shadow-lg border border-gray-200 p-6;
+    @apply bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8;
   }
-  
+
+  .card-hover {
+    @apply hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02];
+  }
+
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-citrea-500 focus:border-transparent;
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300;
   }
-  
+
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-label {
+    @apply text-sm font-semibold text-gray-700;
+  }
+
+  .form-help {
+    @apply text-sm text-gray-600 mt-1;
+  }
+
   .status-success {
-    @apply text-green-600 bg-green-50 border border-green-200 rounded-lg p-3;
+    @apply bg-green-50 border border-green-200 text-green-800 rounded-2xl;
   }
-  
+
   .status-error {
-    @apply text-red-600 bg-red-50 border border-red-200 rounded-lg p-3;
+    @apply bg-red-50 border border-red-200 text-red-800 rounded-2xl;
   }
-  
+
+  .status-info {
+    @apply bg-blue-50 border border-blue-200 text-blue-800 rounded-2xl;
+  }
+
   .status-pending {
-    @apply text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-lg p-3;
+    @apply bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .nav-link {
+    @apply px-4 py-2 rounded-lg text-gray-700 hover:text-gray-900 transition-colors duration-200;
+  }
+
+  .nav-link-active {
+    @apply bg-blue-50 text-blue-900 font-medium;
+  }
+
+  .heading-1 {
+    @apply text-4xl md:text-6xl font-bold text-gray-900 mb-6;
+  }
+
+  .heading-2 {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 mb-8;
+  }
+
+  .heading-3 {
+    @apply text-xl md:text-2xl font-semibold text-gray-900 mb-4;
+  }
+
+  .body-text {
+    @apply text-lg text-gray-700 leading-relaxed;
+  }
+
+  .feature-grid {
+    @apply grid md:grid-cols-3 gap-8 mb-20;
+  }
+
+  .card-feature {
+    @apply text-center p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] group;
+  }
+
+  .content-grid {
+    @apply grid md:grid-cols-2 gap-8;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full h-5 w-5 border-b-2 border-white;
+  }
+}
+
+/* Custom Animations */
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 4s infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+
+  .glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/30;
+  }
+
+  .focus-ring {
+    @apply focus:ring-4 focus:ring-blue-500/20 focus:outline-none;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+}
+
+/* Keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes bounce-slow {
+  0%, 20%, 53%, 80%, 100% { transform: translate3d(0, 0, 0); }
+  40%, 43% { transform: translate3d(0, -30px, 0); }
+  70% { transform: translate3d(0, -15px, 0); }
+  90% { transform: translate3d(0, -4px, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* RainbowKit White Theme Overrides */
+@layer components {
+  /* Gradient theme for RainbowKit elements matching ProofMe */
+  [data-rk] {
+    --rk-colors-accentColor: #2563eb !important;
+    --rk-colors-accentColorForeground: #ffffff !important;
+    --rk-colors-connectButtonBackground: #2563eb !important;
+    --rk-colors-connectButtonText: #ffffff !important;
+    --rk-colors-modalBackground: #ffffff !important;
+    --rk-colors-modalText: #111827 !important;
+    --rk-colors-profileAction: #f9fafb !important;
+    --rk-colors-profileActionText: #374151 !important;
+  }
+
+  /* Gradient connect button matching ProofMe theme */
+  [data-rk] [data-testid="rk-connect-button"] {
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #6366f1) !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 1px 3px 0 rgba(37, 99, 235, 0.3) !important;
+  }
+
+  [data-rk] [data-testid="rk-connect-button"]:hover {
+    background: linear-gradient(135deg, #1d4ed8, #7c2d6d, #4f46e5) !important;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4) !important;
+  }
+
+  /* White wallet info elements */
+  [data-rk] [data-testid="network-switcher"] {
+    background: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  [data-rk] [data-testid="balance"] {
+    background: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #e5e7eb !important;
   }
 } 
