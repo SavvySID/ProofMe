@@ -12,4 +12,23 @@ declare global {
 }
 
 // This export is required to make this a module
-export {} 
+export {}
+
+export interface TransactionStatus {
+  hash: string
+  status: 'pending' | 'confirming' | 'confirmed' | 'failed' | 'network_error'
+  confirmations: number
+  requiredConfirmations: number
+  timestamp: number
+  error?: string
+  receipt?: any
+}
+
+export interface ProofData {
+  proof: ZKProof
+  birthYear: string
+  timestamp: string
+  verified: boolean
+  transactionHash?: string
+  transactionStatus?: TransactionStatus
+} 
