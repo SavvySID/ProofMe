@@ -19,7 +19,11 @@
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src", "src/**/*", "src/types/**/*", "vite-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
