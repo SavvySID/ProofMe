@@ -1,12 +1,16 @@
 import React from 'react'
-import { useWallet } from '../hooks/useWallet'
+import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 interface NetworkStatusProps {
   className?: string
 }
 
 const NetworkStatus: React.FC<NetworkStatusProps> = ({ className = '' }) => {
-  const { walletState, switchToCitreaTestnet } = useWallet()
+  const { isConnected } = useAccount()
+  const { chain } = useNetwork()
+  const { switchNetwork, isLoading: isSwitching } = useSwitchNetwork()
 
   const getNetworkName = (chainId: number | null) => {
     switch (chainId) {
@@ -32,37 +36,43 @@ const NetworkStatus: React.FC<NetworkStatusProps> = ({ className = '' }) => {
 
   const handleSwitchNetwork = async () => {
     try {
-      await switchToCitreaTestnet()
+      if (switchNetwork) {
+        await switchNetwork(5115) // Switch to Citrea Testnet
+      }
     } catch (err) {
       console.error('Failed to switch network:', err)
     }
   }
 
-  if (!walletState.isConnected) {
+  if (!isConnected) {
     return null
   }
 
-  const networkStatus = getNetworkStatus(walletState.chainId)
+  const networkStatus = getNetworkStatus(chain?.id || null)
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        networkStatus.color === 'green' 
-          ? 'bg-green-100 text-green-800' 
-          : networkStatus.color === 'yellow'
-          ? 'bg-yellow-100 text-yellow-800'
-          : 'bg-red-100 text-red-800'
-      }`}>
-        {getNetworkName(walletState.chainId)}
-      </span>
+      {/* Network Status Indicator */}
+      <div className="flex items-center space-x-2">
+        <div className={`w-2 h-2 rounded-full ${
+          networkStatus.color === 'green' 
+            ? 'bg-green-500 animate-pulse' 
+            : networkStatus.color === 'yellow'
+            ? 'bg-yellow-500 animate-pulse-slow'
+            : 'bg-red-500 animate-pulse'
+        }`}></div>
+      </div>
       
+      {/* Switch Network Button */}
       {networkStatus.status === 'wrong' && (
-        <button
+        <Button
           onClick={handleSwitchNetwork}
-          className="text-xs text-blue-600 hover:text-blue-800 underline"
+          variant="link"
+          size="sm"
+          className="text-blue-600 hover:text-blue-800 underline transition-colors hover:no-underline hover:bg-gradient-to-r hover:from-slate-50/50 hover:via-blue-50/50 px-2 py-1 rounded-md p-0 h-auto"
         >
           Switch to Citrea Testnet
-        </button>
+        </Button>
       )}
     </div>
   )
