@@ -7,8 +7,26 @@ export const CONTRACTS = {
   },
   // Citrea testnet addresses (need to be deployed)
   citrea: {
-    AgeVerifier: "0x0000000000000000000000000000000000000000", // TODO: Deploy contract
-    ProofRegistry: "0x0000000000000000000000000000000000000000" // TODO: Deploy contract
+    AgeVerifier: "0xEFb338d4Df6F4a92c2542bfC09f9D468abf2D988",
+    ProofRegistry: "0xe4621f418FF989ed399DEA7B064e8d707911D933"
+  }
+}
+
+// Network configuration
+export const NETWORKS = {
+  1337: {
+    name: 'Localhost',
+    chainId: 1337,
+    rpcUrl: 'http://localhost:8545',
+    explorer: 'http://localhost:8545',
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }
+  },
+  5115: {
+    name: 'Citrea Testnet',
+    chainId: 5115,
+    rpcUrl: 'https://rpc.testnet.citrea.xyz',
+    explorer: 'https://explorer.testnet.citrea.xyz',
+    nativeCurrency: { name: 'tBTC', symbol: 'tBTC', decimals: 18 }
   }
 }
 
@@ -476,4 +494,7 @@ export function areContractsDeployed(chainId: number): boolean {
   const addresses = getContractAddresses(chainId)
   return addresses.AgeVerifier !== "0x0000000000000000000000000000000000000000" &&
          addresses.ProofRegistry !== "0x0000000000000000000000000000000000000000"
-} 
+}
+
+// Note: This function only checks if addresses are configured, not if they're actually deployed.
+// For actual deployment verification, use the deploymentChecker utility. 
